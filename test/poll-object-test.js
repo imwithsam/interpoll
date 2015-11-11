@@ -83,13 +83,27 @@ describe('Poll', function() {
   });
 
   it('has an addVoteToChoice method', function() {
-   var poll = new Poll();
-   poll.addChoice("good");
-   poll.addChoice("bad");
-   poll.addChoice("ugly");
-   poll.addVoteToChoice(1, 2);
+    var poll = new Poll();
+    poll.addChoice("good");
+    poll.addChoice("bad");
+    poll.addChoice("ugly");
+    poll.addVoteToChoice(1, 2);
 
-   assert.deepEqual([1], poll.choices[2].voters);
-   assert.equal("ugly", poll.choices[2].description);
+    assert.deepEqual([1], poll.choices[2].voters);
+    assert.equal("ugly", poll.choices[2].description);
+  });
+
+  it('has an updateVoterChoice method', function() {
+    var poll = new Poll();
+    poll.addChoice("good");
+    poll.addChoice("bad");
+    poll.addChoice("ugly");
+    //voterId, choiceId
+    poll.addVoteToChoice(1, 2);
+    poll.updateVoterChoice(1, 1);
+
+    assert.deepEqual([1], poll.choices[1].voters);
+    assert.deepEqual([], poll.choices[2].voters);
+    assert.deepEqual([], poll.choices[0].voters);
   });
 });
