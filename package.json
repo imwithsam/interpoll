@@ -1,21 +1,33 @@
 {
-  "name": "right-now",
+  "name": "Interpoll",
   "version": "1.0.0",
-  "description": "Real-time application is real-time.",
+  "description": "Rich web application that leverages WebSockets with Node.js and Redis to push data to connected clients in real time",
   "main": "index.js",
   "scripts": {
     "start": "./node_modules/nodemon/bin/nodemon.js index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Turing School",
+  "author": "Interpoll Team(Jamie Kawahara, Samson Brock, Dave Maurer)",
   "license": "MIT",
   "dependencies": {
     "express": "^4.12.3",
     "socket.io": "^1.3.5"
   },
   "devDependencies": {
-    "nodemon": "^1.3.7",
-    "chai": "*",
-    "mocha": "*"
-  }
+    "chai": "^3.4.1",
+    "mocha": "^2.3.3",
+    "nodemon": "^1.3.7"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imwithsam/interpoll.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/imwithsam/interpoll/issues"
+  },
+  "homepage": "https://github.com/imwithsam/interpoll#readme"
 }
