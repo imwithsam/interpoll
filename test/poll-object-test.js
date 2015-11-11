@@ -14,4 +14,29 @@ describe('Poll', function() {
 
     assert.notEqual(poll1.id, poll2.id);
   });
+
+  it('has an admin url', function() {
+    var poll1 = new Poll();
+    var url = poll1.adminUrl;
+    var id = poll1.id;
+
+    assert.equal(`http://localhost:3000/${id}`, url);
+  });
+
+  it('has a voter url', function() {
+    var poll1 = new Poll();
+    var poll2 = new Poll();
+    var url1 = poll1.voterUrl;
+    var url2 = poll2.voterUrl;
+
+    assert.notEqual(url1, url2);
+  });
+
+  it('has different voter and admin urls', function() {
+    var poll1 = new Poll();
+    var adminUrl = poll1.adminUrl;
+    var voterUrl = poll1.voterUrl;
+
+    assert.notEqual(adminUrl, voterUrl);
+  });
 });
