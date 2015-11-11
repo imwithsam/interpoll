@@ -74,4 +74,22 @@ describe('Poll', function() {
 
     assert.equal(4, poll.choices[1].voters[0]);
   });
+
+  it('has an addChoice method', function() {
+    var poll = new Poll();
+    poll.addChoice("good");
+
+    assert.equal("good", poll.choices[0].description);
+  });
+
+  it('has an addVoteToChoice method', function() {
+   var poll = new Poll();
+   poll.addChoice("good");
+   poll.addChoice("bad");
+   poll.addChoice("ugly");
+   poll.addVoteToChoice(1, 2);
+
+   assert.deepEqual([1], poll.choices[2].voters);
+   assert.equal("ugly", poll.choices[2].description);
+  });
 });
