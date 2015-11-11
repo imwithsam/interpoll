@@ -1,3 +1,4 @@
+const Choice = require('../lib/choice');
 const Poll = require('../lib/poll');
 const assert = require('chai').assert;
 
@@ -38,5 +39,20 @@ describe('Poll', function() {
     var voterUrl = poll1.voterUrl;
 
     assert.notEqual(adminUrl, voterUrl);
+  });
+
+  it('has a question field', function() {
+    var poll = new Poll();
+
+    assert.isDefined(poll.question);
+  });
+
+  it('has choices', function() {
+    var poll = new Poll();
+    var choice1 = new Choice();
+    var choice2 = new Choice();
+    poll.choices.push(choice1, choice2);
+
+    assert.deepEqual([choice1, choice2], poll.choices);
   });
 });
