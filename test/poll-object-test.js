@@ -1,4 +1,3 @@
-const Choice = require('../lib/choice');
 const Poll = require('../lib/poll');
 const assert = require('chai').assert;
 
@@ -49,10 +48,62 @@ describe('Poll', function() {
 
   it('has choices', function() {
     var poll = new Poll();
-    var choice1 = new Choice();
-    var choice2 = new Choice();
+    var choice1 = {};
+    var choice2 = {};
     poll.choices.push(choice1, choice2);
 
-    assert.deepEqual([choice1, choice2], poll.choices);
+    assert.deepEqual([{}, {}], poll.choices);
+  });
+
+  it('a choice has a description', function() {
+    var poll = new Poll();
+    var choice1 = {description: "good", voters: [1, 2, 3]};
+    var choice2 = {description: "bad", voters: [4, 5, 6]};
+    var choice3 = {description: "fair", voters: [7, 8, 9]};
+    poll.choices.push(choice1, choice2, choice3);
+
+    assert.equal("good", poll.choices[0].description);
+  });
+
+  it('a choice has an array of voter ids', function() {
+    var poll = new Poll();
+    var choice1 = {description: "good", voters: [1, 2, 3]};
+    var choice2 = {description: "bad", voters: [4, 5, 6]};
+    var choice3 = {description: "fair", voters: [7, 8, 9]};
+    poll.choices.push(choice1, choice2, choice3);
+
+    assert.equal(4, poll.choices[1].voters[0]);
+  });
+
+  it('has an addChoice method', function() {
+    var poll = new Poll();
+    poll.addChoice("good");
+
+    assert.equal("good", poll.choices[0].description);
+  });
+
+  it('has an addVoteToChoice method', function() {
+    var poll = new Poll();
+    poll.addChoice("good");
+    poll.addChoice("bad");
+    poll.addChoice("ugly");
+    poll.addVoteToChoice(1, 2);
+
+    assert.deepEqual([1], poll.choices[2].voters);
+    assert.equal("ugly", poll.choices[2].description);
+  });
+
+  it('has an updateVoterChoice method', function() {
+    var poll = new Poll();
+    poll.addChoice("good");
+    poll.addChoice("bad");
+    poll.addChoice("ugly");
+    //voterId, choiceId
+    poll.addVoteToChoice(1, 2);
+    poll.updateVoterChoice(1, 1);
+
+    assert.deepEqual([1], poll.choices[1].voters);
+    assert.deepEqual([], poll.choices[2].voters);
+    assert.deepEqual([], poll.choices[0].voters);
   });
 });
