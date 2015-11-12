@@ -31,6 +31,12 @@ app.post('/create', function (req, res){
   });
 });
 
+app.get('/vote/:id', function (req, res) {
+  //get the pole object
+  //display the choices and the question
+  console.log(req.params.id);
+});
+
 http.listen(process.env.PORT || 3000, function(){
   console.log('Your server is up and running on Port 3000. Good job!');
 });
