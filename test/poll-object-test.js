@@ -20,7 +20,7 @@ describe('Poll', function() {
     var url = poll1.adminUrl;
     var id = poll1.id;
 
-    assert.equal(`http://localhost:3000/${id}`, url);
+    assert.equal(`http://localhost:3000/admin/${id}`, url);
   });
 
   it('has a voter url', function() {
@@ -98,7 +98,6 @@ describe('Poll', function() {
     poll.addChoice("good");
     poll.addChoice("bad");
     poll.addChoice("ugly");
-    //voterId, choiceId
     poll.addVoteToChoice(1, 2);
     poll.updateVoterChoice(1, 1);
 

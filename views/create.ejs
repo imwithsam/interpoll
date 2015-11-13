@@ -11,14 +11,17 @@
   <body>
     <div class="container">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
           <h2>Polling Results</h2>
-          <a href="#"><%= poll.adminUrl %></a>
+          <a href="http://<%= host + poll.adminUrl() %>">http://<%= host + poll.adminUrl()%></a>
         </div>
-        <div class="col-md-6">
+      </div>
+      <div class="row">
+        <div class="col-md-12">
           <h2>Voting Page</h2>
-          <a href="#"><%= poll.voterUrl %></a>
+          <a href="http://<%= host + poll.voterUrl() %>">http://<%= host + poll.voterUrl() %></a>
         </div>
+      </div>
     </div>
     </div>
     <script src="/jquery.js"></script>
