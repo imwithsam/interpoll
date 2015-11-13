@@ -13,13 +13,13 @@
       <div class="row">
         <div class="col-md-12">
           <h2>Polling Results</h2>
-          <a href="<%= poll.adminUrl %>"><%= poll.adminUrl %></a>
+          <a href="http://<%= host + poll.adminUrl() %>">http://<%= host + poll.adminUrl()%></a>
         </div>
       </div>
       <div class="row">
         <div class="col-md-12">
           <h2>Voting Page</h2>
-          <a href="<%= poll.voterUrl %>"><%= poll.voterUrl %></a>
+          <a href="http://<%= host + poll.voterUrl() %>">http://<%= host + poll.voterUrl() %></a>
         </div>
       </div>
     </div>

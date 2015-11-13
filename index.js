@@ -26,6 +26,7 @@ app.get('/new', function (req, res){
 
 app.post('/create', function (req, res){
   var poll = new Poll();
+  var host = req.headers.host;
 
   poll.question = req.body.question;
   poll.addChoice(req.body.choice1);
@@ -34,7 +35,8 @@ app.post('/create', function (req, res){
   client.hmset('polls', poll.id, JSON.stringify(poll));
 
   res.render('create', {
-    poll: poll
+    poll: poll,
+    host: host
   });
 });
 
