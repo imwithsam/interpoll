@@ -76,21 +76,18 @@ io.on('connection', function(socket) {
   socket.on('message', function(channel, message) {
     if (channel === 'voteCast') {
       votes[socket.id] = message;
-      //socket.emit('voteCount', countVotes(votes));
-      //console.log(countVotes(votes));
-      //console.log(votes);
+      io.sockets.emit('voteCount', countVotes(votes));
     }
   });
 });
 
-// TODO: Refactor using Lo-Dash
 // Keep track of vote counts
 function countVotes(votes) {
-  var result = _.reduce(votes, function(hash, choiceId, socketId){
-    if (hash[choiceId]) {
-      hash[choiceId] += 1;
+  var result = _.reduce(votes, function(hash, choice, socketId){
+    if (hash[choice]) {
+      hash[choice] += 1;
     } else {
-      hash[choiceId] = 1;
+      hash[choice] = 1;
     }
     return hash;
   }, {});
