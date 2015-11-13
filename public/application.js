@@ -1,17 +1,19 @@
 var socket = io();
 
 var voteCounts = document.getElementById('vote-counts');
+var pollResults = document.getElementById('poll-results');
 
 socket.on('voteCount', function(votes) {
-  console.log("=====votes======");
-  console.log(votes);
-  //var results = '';
+  var results = '';
 
-  //for (var choice in votes) {
-    //results = results + '<p>' + choice + ': ' + votes[choice] + '</p>';
-  //};
+  for (var choice in votes) {
+    results = results + '<p>' + choice + ': ' + votes[choice] + '</p>';
+  }
 
-  //voteCounts.innerHTML = results;
+  pollResults.innerHTML = results;
+
+  console.log('votes', votes);
+  console.log('pollResults', pollResults);
 });
 
 var buttons = document.querySelectorAll('input[type="radio"]');
