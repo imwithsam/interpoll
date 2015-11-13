@@ -51,6 +51,17 @@ app.get('/vote/:id', function (req, res) {
   });
 });
 
+app.get('/admin/:id', function (req, res) {
+  //we need to get the poll where the id is the url
+  client.hgetall('polls', function(err, polls){
+    var targetPoll = polls[req.params.id];
+    res.render('admin', {
+      poll: JSON.parse(targetPoll),
+      votes: countVotes(votes)
+    });
+  });
+});
+
 var votes = {};
 
 // Set up event listener for the 'connection' event on the server
@@ -62,14 +73,12 @@ io.on('connection', function(socket) {
     console.log('A user has disconnected.');
   });
 
-  // Save vote to memory when one is cast
-  // Send vote count to each client
   socket.on('message', function(channel, message) {
     if (channel === 'voteCast') {
       votes[socket.id] = message;
-      // send vote count to Polling Results Admin Page
-      // socket.emit('voteCount', countVotes(votes));
-      console.log('Votes: ', votes);
+      //socket.emit('voteCount', countVotes(votes));
+      //console.log(countVotes(votes));
+      //console.log(votes);
     }
   });
 });
@@ -77,18 +86,15 @@ io.on('connection', function(socket) {
 // TODO: Refactor using Lo-Dash
 // Keep track of vote counts
 function countVotes(votes) {
-  var voteCount = {
-      A: 0,
-      B: 0,
-      C: 0,
-      D: 0
-  };
-
-  for (vote in votes) {
-    voteCount[votes[vote]]++
-  }
-
-  return voteCount;
+  var result = _.reduce(votes, function(hash, choiceId, socketId){
+    if (hash[choiceId]) {
+      hash[choiceId] += 1;
+    } else {
+      hash[choiceId] = 1;
+    }
+    return hash;
+  }, {});
+  return result;
 }
 
 http.listen(process.env.PORT || 3000, function(){
