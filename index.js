@@ -51,6 +51,46 @@ app.get('/vote/:id', function (req, res) {
   });
 });
 
+var votes = {};
+
+// Set up event listener for the 'connection' event on the server
+io.on('connection', function(socket) {
+  console.log('A user has connected.');
+  console.log(io.engine.clientsCount + ' user(s) now connected.');
+
+  socket.on('disconnect', function() {
+    console.log('A user has disconnected.');
+  });
+
+  // Save vote to memory when one is cast
+  // Send vote count to each client
+  socket.on('message', function(channel, message) {
+    if (channel === 'voteCast') {
+      votes[socket.id] = message;
+      // send vote count to Polling Results Admin Page
+      // socket.emit('voteCount', countVotes(votes));
+      console.log('Votes: ', votes);
+    }
+  });
+});
+
+// TODO: Refactor using Lo-Dash
+// Keep track of vote counts
+function countVotes(votes) {
+  var voteCount = {
+      A: 0,
+      B: 0,
+      C: 0,
+      D: 0
+  };
+
+  for (vote in votes) {
+    voteCount[votes[vote]]++
+  }
+
+  return voteCount;
+}
+
 http.listen(process.env.PORT || 3000, function(){
   console.log('Your server is up and running on Port 3000. Good job!');
 });
