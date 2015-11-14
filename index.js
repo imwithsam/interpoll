@@ -52,7 +52,6 @@ app.get('/vote/:id', function (req, res) {
 });
 
 app.get('/admin/:id', function (req, res) {
-  //we need to get the poll where the id is the url
   client.hgetall('polls', function(err, polls){
     var targetPoll = polls[req.params.id];
     res.render('admin', {
@@ -74,9 +73,27 @@ io.on('connection', function(socket) {
   });
 
   socket.on('message', function(channel, message) {
+
     if (channel === 'voteCast') {
-      votes[socket.id] = message;
-      io.sockets.emit('voteCount', countVotes(votes));
+      client.hgetall('polls', function(err, polls){
+        var targetPoll = JSON.parse(polls[message.pollId]);
+        console.log(targetPoll.isOpen, 'looking for');
+        if (targetPoll.isOpen) {
+          votes[socket.id] = message.choice;
+          io.sockets.emit('voteCount', countVotes(votes));
+        }
+      });
+    }
+
+    if (channel === 'endPoll') {
+      client.hgetall('polls', function(err, polls){
+        console.log(polls[message.pollId]);
+        var targetPoll = JSON.parse(polls[message.pollId]);
+        console.log(targetPoll);
+        targetPoll.isOpen = false;
+        console.log(targetPoll);
+        client.hmset('polls', message.pollId, JSON.stringify(targetPoll));
+      });
     }
   });
 });

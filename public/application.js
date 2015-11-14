@@ -2,6 +2,8 @@ var socket = io();
 
 var voteCounts = document.getElementById('vote-counts');
 var pollResults = document.getElementById('poll-results');
+var endPollButton = document.getElementById('end-poll');
+var buttons = document.querySelectorAll('input[type="radio"]');
 
 socket.on('voteCount', function(votes) {
   var results = '';
@@ -16,10 +18,12 @@ socket.on('voteCount', function(votes) {
   console.log('pollResults', pollResults);
 });
 
-var buttons = document.querySelectorAll('input[type="radio"]');
-
 for (var i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener('click', function () {
-    socket.send('voteCast', this.value);
+    socket.send('voteCast', this.dataset);
   });
 }
+
+endPollButton.addEventListener('click', function () {
+  socket.send('endPoll', this.dataset);
+});
