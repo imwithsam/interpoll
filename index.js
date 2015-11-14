@@ -6,7 +6,7 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const Poll = require('./lib/poll');
 const redis = require('redis');
-const client = redis.createClient();
+const client = redis.createClient(process.env.REDIS_URL);
 const _ = require('lodash');
 
 //check with redis-cli, keys *, hgetall "polls"
