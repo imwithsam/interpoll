@@ -32,6 +32,7 @@ app.post('/create', function (req, res){
   poll.addChoice(req.body.choice1);
   poll.addChoice(req.body.choice2);
   poll.addChoice(req.body.choice3);
+  console.log(poll, "#1 poll object");
   client.hmset('polls', poll.id, JSON.stringify(poll));
 
   res.render('create', {
@@ -73,7 +74,7 @@ io.on('connection', function(socket) {
   });
 
   socket.on('message', function(channel, message) {
-
+    console.log(message, 'this is the message');
     if (channel === 'voteCast') {
       client.hgetall('polls', function(err, polls){
         var targetPoll = JSON.parse(polls[message.pollId]);
@@ -86,12 +87,10 @@ io.on('connection', function(socket) {
     }
 
     if (channel === 'endPoll') {
+      console.log(message, 'message when endPoll');
       client.hgetall('polls', function(err, polls){
-        console.log(polls[message.pollId]);
         var targetPoll = JSON.parse(polls[message.pollId]);
-        console.log(targetPoll);
         targetPoll.isOpen = false;
-        console.log(targetPoll);
         client.hmset('polls', message.pollId, JSON.stringify(targetPoll));
       });
     }
