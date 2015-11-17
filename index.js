@@ -68,18 +68,18 @@ io.on('connection', function(socket) {
   console.log('A user has connected.');
   console.log(io.engine.clientsCount + ' user(s) now connected.');
 
+  socket.emit('socketId', socket.id);
+
   socket.on('disconnect', function() {
     console.log('A user has disconnected.');
   });
 
   socket.on('message', function(channel, message) {
-
     if (channel === 'voteCast') {
       client.hgetall('polls', function(err, polls){
         var targetPoll = JSON.parse(polls[message.pollId]);
-        console.log(targetPoll.isOpen, 'looking for');
         if (targetPoll.isOpen) {
-          votes[socket.id] = message.choice;
+          votes[message.socketId] = message.choice;
           io.sockets.emit('voteCount', countVotes(votes));
         }
       });
@@ -87,11 +87,8 @@ io.on('connection', function(socket) {
 
     if (channel === 'endPoll') {
       client.hgetall('polls', function(err, polls){
-        console.log(polls[message.pollId]);
         var targetPoll = JSON.parse(polls[message.pollId]);
-        console.log(targetPoll);
         targetPoll.isOpen = false;
-        console.log(targetPoll);
         client.hmset('polls', message.pollId, JSON.stringify(targetPoll));
       });
     }

@@ -3,7 +3,15 @@ var socket = io();
 var voteCounts = document.getElementById('vote-counts');
 var pollResults = document.getElementById('poll-results');
 var endPollButton = document.getElementById('end-poll');
-var buttons = document.querySelectorAll('input[type="radio"]');
+var votingButtons = document.querySelectorAll('input[type="radio"]');
+
+socket.on('socketId', function(socketId) {
+  if (getCookie('socketid')) {
+    document.cookie = 'socketid=' + getCookie('socketid');
+  } else {
+    document.cookie = 'socketid=' + socketId;
+  }
+});
 
 socket.on('voteCount', function(votes) {
   var results = '';
@@ -18,8 +26,9 @@ socket.on('voteCount', function(votes) {
   console.log('pollResults', pollResults);
 });
 
-for (var i = 0; i < buttons.length; i++) {
-  buttons[i].addEventListener('click', function () {
+for (var i = 0; i < votingButtons.length; i++) {
+  votingButtons[i].addEventListener('click', function () {
+    this.dataset['socketId'] = getCookie('socketid');
     socket.send('voteCast', this.dataset);
   });
 }
@@ -27,3 +36,14 @@ for (var i = 0; i < buttons.length; i++) {
 endPollButton.addEventListener('click', function () {
   socket.send('endPoll', this.dataset);
 });
+
+function getCookie(cname) {
+  var name = cname + '=';
+  var ca = document.cookie.split(';');
+  for(var i=0; i<ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') c = c.substring(1);
+    if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+  }
+  return '';
+}
