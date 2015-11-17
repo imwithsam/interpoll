@@ -21,9 +21,6 @@ socket.on('voteCount', function(votes) {
   }
 
   pollResults.innerHTML = results;
-
-  console.log('votes', votes);
-  console.log('pollResults', pollResults);
 });
 
 for (var i = 0; i < votingButtons.length; i++) {

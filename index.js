@@ -32,6 +32,7 @@ app.post('/create', function (req, res){
   poll.addChoice(req.body.choice1);
   poll.addChoice(req.body.choice2);
   poll.addChoice(req.body.choice3);
+  console.log(poll, "#1 poll object");
   client.hmset('polls', poll.id, JSON.stringify(poll));
 
   res.render('create', {
@@ -56,14 +57,12 @@ app.get('/admin/:id', function (req, res) {
     var targetPoll = polls[req.params.id];
     res.render('admin', {
       poll: JSON.parse(targetPoll),
-      votes: countVotes(votes)
+      votes: countVotes(targetPoll.votes)
     });
   });
 });
 
-var votes = {};
 
-// Set up event listener for the 'connection' event on the server
 io.on('connection', function(socket) {
   console.log('A user has connected.');
   console.log(io.engine.clientsCount + ' user(s) now connected.');
@@ -79,13 +78,15 @@ io.on('connection', function(socket) {
       client.hgetall('polls', function(err, polls){
         var targetPoll = JSON.parse(polls[message.pollId]);
         if (targetPoll.isOpen) {
-          votes[message.socketId] = message.choice;
-          io.sockets.emit('voteCount', countVotes(votes));
+          targetPoll.votes[message.socketId] = message.choice;
+          client.hmset('polls', message.pollId, JSON.stringify(targetPoll));
+          io.sockets.emit('voteCount', countVotes(targetPoll.votes));
         }
       });
     }
 
     if (channel === 'endPoll') {
+      console.log(message, 'message when endPoll');
       client.hgetall('polls', function(err, polls){
         var targetPoll = JSON.parse(polls[message.pollId]);
         targetPoll.isOpen = false;
