@@ -57,14 +57,12 @@ app.get('/admin/:id', function (req, res) {
     var targetPoll = polls[req.params.id];
     res.render('admin', {
       poll: JSON.parse(targetPoll),
-      votes: countVotes(votes)
+      votes: countVotes(targetPoll.votes)
     });
   });
 });
 
-var votes = {};
 
-// Set up event listener for the 'connection' event on the server
 io.on('connection', function(socket) {
   console.log('A user has connected.');
   console.log(io.engine.clientsCount + ' user(s) now connected.');
@@ -78,10 +76,12 @@ io.on('connection', function(socket) {
     if (channel === 'voteCast') {
       client.hgetall('polls', function(err, polls){
         var targetPoll = JSON.parse(polls[message.pollId]);
-        console.log(targetPoll.isOpen, 'looking for');
         if (targetPoll.isOpen) {
-          votes[socket.id] = message.choice;
-          io.sockets.emit('voteCount', countVotes(votes));
+          targetPoll.votes[socket.id] = message.choice;
+          client.hmset('polls', message.pollId, JSON.stringify(targetPoll));
+          console.log(targetPoll.votes, 'targetPoll.votes');
+          console.log(countVotes(targetPoll.votes), 'resultof countVotes');
+          io.sockets.emit('voteCount', countVotes(targetPoll.votes));
         }
       });
     }
